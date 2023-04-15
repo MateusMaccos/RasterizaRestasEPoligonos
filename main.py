@@ -318,20 +318,43 @@ def Polygons():
       algoritmoRasterizacao(origemX, origemY, destinoX, destinoY, H, W, matrix,
                             cor)
 
+  def produzLinhasContinuas(arrayPontos, cores):
+    for index in range(len(arrayPontos)):
+      cor = cores[index]
+      arrayArestas = []
+      for j in range(len(arrayPontos[index])):
+        if j != (len(arrayPontos[index]) - 1):
+          arrayArestas.append((j, j + 1))
+        else:
+          arrayArestas.append((j, 0))
+      for ponto in range(0, len(arrayArestas)):
+        primeiroPonto = arrayArestas[ponto][0]
+        segundoPonto = arrayArestas[ponto][1]
+        origemX = arrayPontos[index][primeiroPonto][0]
+        origemY = arrayPontos[index][primeiroPonto][1]
+        destinoX = arrayPontos[index][segundoPonto][0]
+        destinoY = arrayPontos[index][segundoPonto][1]
+        ax = plt.subplot(2, 3, 6)
+        ax.set_xlim([-1, 1])
+        ax.set_ylim([-1, 1])
+        ax.plot([origemX, destinoX], [origemY, destinoY],
+                color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
+
   def preenchePoligonos(arrayPontos):
-    resolucoes = [[1920, 1080], [800, 600], [600, 600],[300, 300], [100, 100]]
+    resolucoes = [[100, 100], [300, 300], [600, 600], [800, 600], [1920, 1080]]
+    cores = []
+    for quantidadePol in range(len(arrayPontos)):
+      cores.append([
+        random.randint(0, 255),
+        random.randint(0, 255),
+        random.randint(0, 255)
+      ])
     for resolucao in range(len(resolucoes)):
       matrix = np.zeros(
         (resolucoes[resolucao][1], resolucoes[resolucao][0], 3),
         dtype=np.uint8)
-      cor = []
       for index in range(len(arrayPontos)):
         arrayArestas = []
-        cor.append([
-          random.randint(0, 255),
-          random.randint(0, 255),
-          random.randint(0, 255)
-        ])
         for j in range(len(arrayPontos[index])):
           if j != (len(arrayPontos[index]) - 1):
             arrayArestas.append((j, j + 1))
@@ -340,12 +363,14 @@ def Polygons():
             arrayArestas.append((j, 0))
         produzArestas(arrayPontos[index], arrayArestas,
                       resolucoes[resolucao][0], resolucoes[resolucao][1],
-                      matrix, cor[index])
+                      matrix, cores[index])
 
-        find_internal_points(matrix, cor[index])
+        find_internal_points(matrix, cores[index])
       plt.subplot(2, 3, resolucao + 1)
       plt.imshow(matrix.astype("uint8"))
       plt.gca().invert_yaxis()
+    produzLinhasContinuas(arrayPontos, cores)
+    #plt.plot(triangles, color='blue')
     plt.show()
 
 
