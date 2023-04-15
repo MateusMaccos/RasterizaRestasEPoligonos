@@ -1,5 +1,6 @@
 from tkinter import * 
 from tkinter import ttk
+from tkinter import messagebox
 import re
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,6 +10,7 @@ import random
 master = Tk()
 master.title("Rasterização de Retas e Polígonos")
 master.geometry("400x150")
+master.iconbitmap(r'Icone.ico')
 master.configure(background='lightblue')
 master.resizable(False, False)
 
@@ -158,10 +160,32 @@ def Retas():
 
   def pegarRetas():
       coords=[]
+      temErro = False
+      count=0
       for reta in lbllst:
-          (x1, y1, x2 ,y2) = re.findall(r'-?\d+\.?\d*', reta[1].get())
-          coords.append([[float(x1),float(y1)],[float(x2),float(y2)]])
-      Rasterizacao(coords)
+          count+=1
+          inputList = re.findall(r'-?\d+\.?\d*', reta[1].get())
+          if len(inputList) == 0:
+            temErro = True
+            messagebox.showerror(title='Erro',message=f"Não foi possível identificar coordenadas na reta {count}!")
+          elif len(inputList) < 4:
+            temErro = True
+            messagebox.showerror(title='Erro',message=f"Na reta {count} você tem pontos insuficientes para printar a reta!")
+          elif len(inputList) > 4:
+            temErro = True
+            messagebox.showerror(title='Erro',message=f"Na reta {count} você tem pontos a mais do que os necessários para printar a reta!")
+          if not temErro:
+            foraDosLimites=[]
+            for index in range(len(inputList)):
+              if -1 > float(inputList[index]) or float(inputList[index]) > 1:
+                temErro = True 
+                foraDosLimites.append(index+1)   
+            if temErro:
+              messagebox.showerror(title='Erro',message=f"Coordenada(s) {foraDosLimites} da reta {count} fora dos limites impostos (-1 a 1)!")     
+          if not temErro:  
+            coords.append([[float(inputList[0]),float(inputList[1])],[float(inputList[2]),float(inputList[3])]])
+      if not temErro:
+        Rasterizacao(coords)
 
     
 
@@ -169,6 +193,7 @@ def Retas():
   retaWindow = Toplevel()
   retaWindow.title("Rasterização de Retas")
   retaWindow.geometry("500x400+750+300")
+  retaWindow.iconbitmap(r'Icone.ico')
   retaWindow.resizable(False, False)
   retaWindow.transient(master)
   retaWindow.focus_force()
@@ -315,21 +340,44 @@ def Polygons():
   def pegarPolygons():
     count = 0
     allPolygons = []
+    temErro = False
     for polygon in listP:
         coordPolygon = []
         count+=1
         inputList = re.findall(r'-?\d+\.?\d*', polygon[1].get())
-        for index in range(len(inputList)-1):
-          if index%2==0:
-            coordPolygon.append((float(inputList[index]), float(inputList[index+1])))
+        if len(inputList) % 2 != 0:
+          temErro = True
+          messagebox.showerror(title='Erro',message=f"Você esqueceu alguma coordenada no polígono {count}, não foi possível separar em pares as suas coordenadas!")
+        elif len(inputList) == 0:
+          temErro = True
+          messagebox.showerror(title='Erro',message=f"Não foi possível identificar coordenadas no polígono {count}!")
+        elif len(inputList) < 6:
+          temErro = True
+          if len(inputList)==4:
+            messagebox.showerror(title='Erro',message=f"No polígono {count} você tem pontos apenas para printar uma reta, melhor selecionar a opção de rasterizar retas!")
+          else:
+            messagebox.showerror(title='Erro',message=f"No polígono {count} você tem pontos insuficientes para printar um polígono!")
+        if not temErro:
+          foraDosLimites=[]
+          for index in range(len(inputList)):
+            if -1 > float(inputList[index]) or float(inputList[index]) > 1:
+              temErro = True
+              foraDosLimites.append(index+1)
+            else:
+              if index%2==0:
+                coordPolygon.append((float(inputList[index]), float(inputList[index+1])))
+          if temErro:
+            messagebox.showerror(title='Erro',message=f"Coordenada(s) {foraDosLimites} do polígono {count} fora dos limites impostos (-1 a 1)!")
         allPolygons.append(coordPolygon)
-    preenchePoligonos(allPolygons)  
+    if not temErro:
+      preenchePoligonos(allPolygons)  
           
       
    
   PWindow = Toplevel()
   PWindow.title("Rasterização de Polígonos")
   PWindow.geometry("500x400+750+300")
+  PWindow.iconbitmap(r'Icone.ico')
   PWindow.resizable(False, False)
   PWindow.transient(master)
   PWindow.focus_force()
