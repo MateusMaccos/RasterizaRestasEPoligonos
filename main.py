@@ -16,8 +16,8 @@ master.resizable(False, False)
 	
 
 def Retas():
-  #FUnção de Rasterização da RETA
-  def Rasterizacao(reta,H,W):
+  #Função de Rasterização da RETA
+  def Rasterizacao(reta):
     
 
     def novaCoord(oldX, oldY, W, H):
@@ -75,8 +75,6 @@ def Retas():
           x = x - incremento
           funcPlotX(x, matrix)
 
-      #plt.plot([X1, X2], [Y1, Y2], color='blue')
-
     def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
       for ponto in range(0, len(arrayArestas)):
         primeiroPonto = arrayArestas[ponto][0]
@@ -87,34 +85,54 @@ def Retas():
         destinoY = arrayPontos[segundoPonto][1]
         algoritmoRasterizacao(origemX, origemY, destinoX, destinoY, H, W, matrix,
                               cor)
-
-    def desenhaReta(arrayPontos, H, W):
-      resolucoes = [[1920, 1080], [800, 600], [600, 600],[300, 300], [100, 100]]
+    def produzRetasContinuas(arrayPontos,cores):
+      for index in range(len(arrayPontos)):
+        cor = cores[index]
+        arrayRetas=[[0,1]]
+        for ponto in range(0, len(arrayRetas)):
+          primeiroPonto = arrayRetas[ponto][0]
+          segundoPonto = arrayRetas[ponto][1]
+          origemX = arrayPontos[index][primeiroPonto][0]
+          origemY = arrayPontos[index][primeiroPonto][1]
+          destinoX = arrayPontos[index][segundoPonto][0]
+          destinoY = arrayPontos[index][segundoPonto][1]
+          continuo = plt.subplot(2, 3, 6)
+          continuo.set_xlim([-1, 1])
+          continuo.set_ylim([-1, 1])
+          print(origemX,origemY)
+          print(destinoX,destinoY)
+          continuo.plot([origemX, destinoX], [origemY, destinoY],
+                  color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
+          
+    def desenhaReta(arrayPontos):
+      resolucoes = [[100, 100],[300, 300],[600, 600], [800, 600],[1920, 1080]]
+      cores = []
+      for quantidadeRetas in range(len(arrayPontos)):
+        cores.append([
+          random.randint(0, 255),
+          random.randint(0, 255),
+          random.randint(0, 255)
+        ])
       for resolucao in range(len(resolucoes)):
         matrix = np.zeros(
           (resolucoes[resolucao][1], resolucoes[resolucao][0], 3),
           dtype=np.uint8)
-        cor = []
         for index in range(len(arrayPontos)):
-            cor.append([random.randint(0,255),random.randint(0,255),random.randint(0,255)])
             arrayRetas=[[0,1]]
-            produzArestas(arrayPontos[index], arrayRetas, H, W, matrix, cor[index])     
+            produzArestas(arrayPontos[index], arrayRetas, resolucoes[resolucao][0], resolucoes[resolucao][1], matrix, cores[index])     
         plt.subplot(2, 3, resolucao + 1)
         plt.imshow(matrix.astype("uint8"))
         plt.gca().invert_yaxis()
+      produzRetasContinuas(arrayPontos,cores)
       plt.show()
-
-    desenhaReta(reta, H,W)
+    desenhaReta(reta)
 
   def pegarRetas():
-      count = 0
       coords=[]
       for reta in lbllst:
-          count+=1
-          print("Reta %i:%s" % (count,reta[1].get()))
           (x1, y1, x2 ,y2) = re.findall(r'-?\d+\.?\d*', reta[1].get())
           coords.append([[float(x1),float(y1)],[float(x2),float(y2)]])
-      Rasterizacao(coords,1920,1080)
+      Rasterizacao(coords)
 
     
 
@@ -305,8 +323,6 @@ def Polygons():
         x = x - incremento
         funcPlotX(x, matrix)
 
-    #plt.plot([X1, X2], [Y1, Y2], color='blue')
-
   def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
     for ponto in range(0, len(arrayArestas)):
       primeiroPonto = arrayArestas[ponto][0]
@@ -334,10 +350,10 @@ def Polygons():
         origemY = arrayPontos[index][primeiroPonto][1]
         destinoX = arrayPontos[index][segundoPonto][0]
         destinoY = arrayPontos[index][segundoPonto][1]
-        ax = plt.subplot(2, 3, 6)
-        ax.set_xlim([-1, 1])
-        ax.set_ylim([-1, 1])
-        ax.plot([origemX, destinoX], [origemY, destinoY],
+        continuo = plt.subplot(2, 3, 6)
+        continuo.set_xlim([-1, 1])
+        continuo.set_ylim([-1, 1])
+        continuo.plot([origemX, destinoX], [origemY, destinoY],
                 color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
 
   def preenchePoligonos(arrayPontos):
@@ -370,7 +386,6 @@ def Polygons():
       plt.imshow(matrix.astype("uint8"))
       plt.gca().invert_yaxis()
     produzLinhasContinuas(arrayPontos, cores)
-    #plt.plot(triangles, color='blue')
     plt.show()
 
 
@@ -381,12 +396,10 @@ def Polygons():
         coordPolygon = []
         count+=1
         inputList = re.findall(r'-?\d+\.?\d*', polygon[1].get())
-        print(inputList)
         for index in range(len(inputList)-1):
           if index%2==0:
             coordPolygon.append((float(inputList[index]), float(inputList[index+1])))
         allPolygons.append(coordPolygon)
-        print(allPolygons)
     preenchePoligonos(allPolygons)  
           
       
