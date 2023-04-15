@@ -12,79 +12,108 @@ master.geometry("400x150")
 master.configure(background='lightblue')
 master.resizable(False, False)
 
+def preencheRegiaoInterna(matrix, cor):
+    horizontal = []
+    # ler a matriz horizontalmente e guardar as posições internas
+    for i in range(matrix.shape[0]):
+      inside_polygon = False
+      horizontalLinha = []
+      counter = 0
+      for j in range(matrix.shape[1]):
+        if all(matrix[i][j] == cor):
+          if j != matrix.shape[1] - 1:
+            if all(matrix[i][j + 1] != cor):
+              inside_polygon = not inside_polygon
+              counter += 1
+          else:
+            inside_polygon = not inside_polygon
+            counter += 1
+        elif inside_polygon:
+          horizontalLinha.append((i, j))
+      if counter == 1 or counter == 0:
+        horizontalLinha.clear()
+      else:
+        for elemento in horizontalLinha:
+          horizontal.append(elemento)
 
+    # pintar os pontos internos na matriz
+    for point in horizontal:
+      matrix[point[0]][point[1]] = cor
+
+
+  
+
+def novaCoord(oldX, oldY, W, H):
+  newX = (oldX - (-1)) * W / 2
+  newY = (oldY - (-1)) * H / 2
+  return [newX, newY]
+
+def produzFragmento(x, y, matrix, cor):
+  Xm = round(x)
+  Ym = round(y)
+
+  try:
+    matrix[Ym][Xm] = cor
+  except IndexError:
+    print(
+      "Aviso: A posição ({}, {}) está fora dos limites da matriz.".format(
+        Xm, Ym))
+
+def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
+  X1, Y1 = novaCoord(X1, Y1, H, W)
+  X2, Y2 = novaCoord(X2, Y2, H, W)
+  dx = X2 - X1
+  dy = Y2 - Y1
+  if (X1 == X2):
+    m = 0
+  else:
+    m = dy / dx
+  x = X1
+  y = Y1
+  b = y - m * x
+  produzFragmento(x, y, matrix, cor)
+
+  def funcPlotX(x, matrix):
+    y = m * x + b
+    produzFragmento(x, y, matrix, cor)
+
+  def funcPlotY(y, matrix):
+    produzFragmento(x, y, matrix, cor)
+
+  incremento = 0.1
+  if (x < X2):
+    while (x < X2):
+      x = x + incremento
+      funcPlotX(x, matrix)
+  elif (x == X2):
+    if (y < Y2):
+      while (y < Y2):
+        y = y + incremento
+        funcPlotY(y, matrix)
+    else:
+      while (y > Y2):
+        y = y - incremento
+        funcPlotY(y, matrix)
+  else:
+    while (x > X2):
+      x = x - incremento
+      funcPlotX(x, matrix)
+
+def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
+  for ponto in range(0, len(arrayArestas)):
+    primeiroPonto = arrayArestas[ponto][0]
+    segundoPonto = arrayArestas[ponto][1]
+    origemX = arrayPontos[primeiroPonto][0]
+    origemY = arrayPontos[primeiroPonto][1]
+    destinoX = arrayPontos[segundoPonto][0]
+    destinoY = arrayPontos[segundoPonto][1]
+    algoritmoRasterizacao(origemX, origemY, destinoX, destinoY, H, W, matrix,
+                          cor)
 	
 
 def Retas():
   #Função de Rasterização da RETA
   def Rasterizacao(reta):
-    
-
-    def novaCoord(oldX, oldY, W, H):
-      newX = (oldX - (-1)) * W / 2
-      newY = (oldY - (-1)) * H / 2
-      return [newX, newY]
-
-    def produzFragmento(x, y, matrix, cor):
-      Xm = round(x)
-      Ym = round(y)
-
-      try:
-        matrix[Ym][Xm] = cor
-      except IndexError:
-        print(
-          "Aviso: A posição ({}, {}) está fora dos limites da matriz.".format(
-            Xm, Ym))
-
-    def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
-      X1, Y1 = novaCoord(X1, Y1, H, W)
-      X2, Y2 = novaCoord(X2, Y2, H, W)
-      dx = X2 - X1
-      dy = Y2 - Y1
-      if (X1 == X2):
-        m = 0
-      else:
-        m = dy / dx
-      x = X1
-      y = Y1
-      b = y - m * x
-      produzFragmento(x, y, matrix, cor)
-
-      def funcPlotX(x, matrix):
-        y = m * x + b
-        produzFragmento(x, y, matrix, cor)
-
-      def funcPlotY(y, matrix):
-        produzFragmento(x, y, matrix, cor)
-      incremento = 0.1
-      if (x < X2):
-        while (x < X2):
-          x = x + incremento
-          funcPlotX(x, matrix)
-      elif (x == X2):
-        if (y < Y2):
-          while (y < Y2):
-            y = y + incremento
-            funcPlotY(y, matrix)
-        else:
-          while (y > Y2):
-            y = y - incremento
-            funcPlotY(y, matrix)
-      else:
-        while (x > X2):
-          x = x - incremento
-          funcPlotX(x, matrix)
-
-    def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
-      for ponto in range(0, len(arrayArestas)):
-        primeiroPonto = arrayArestas[ponto][0]
-        segundoPonto = arrayArestas[ponto][1]
-        origemX = arrayPontos[primeiroPonto][0]
-        origemY = arrayPontos[primeiroPonto][1]
-        destinoX = arrayPontos[segundoPonto][0]
-        destinoY = arrayPontos[segundoPonto][1]
-        algoritmoRasterizacao(origemX, origemY, destinoX, destinoY, H, W, matrix,
-                              cor)
     def produzRetasContinuas(arrayPontos,cores):
       for index in range(len(arrayPontos)):
         cor = cores[index]
@@ -107,7 +136,7 @@ def Retas():
     def desenhaReta(arrayPontos):
       resolucoes = [[100, 100],[300, 300],[600, 600], [800, 600],[1920, 1080]]
       cores = []
-      for quantidadeRetas in range(len(arrayPontos)):
+      while len(cores) < len(arrayPontos):
         cores.append([
           random.randint(0, 255),
           random.randint(0, 255),
@@ -226,113 +255,7 @@ def Retas():
   left_sub_title2.pack(pady=1)
   left_sub_title3.pack(pady=0)
 
- 
-
-
-
-	
-
-
 def Polygons():	
-
-
-  def find_internal_points(matrix, cor):
-    horizontal = []
-    # ler a matriz horizontalmente e guardar as posições internas
-    for i in range(matrix.shape[0]):
-      inside_polygon = False
-      horizontalLinha = []
-      counter = 0
-      for j in range(matrix.shape[1]):
-        if all(matrix[i][j] == cor):
-          if j != matrix.shape[1] - 1:
-            if all(matrix[i][j + 1] != cor):
-              inside_polygon = not inside_polygon
-              counter += 1
-          else:
-            inside_polygon = not inside_polygon
-            counter += 1
-        elif inside_polygon:
-          horizontalLinha.append((i, j))
-      if counter == 1 or counter == 0:
-        horizontalLinha.clear()
-      else:
-        for elemento in horizontalLinha:
-          horizontal.append(elemento)
-
-    # pintar os pontos internos na matriz
-    for point in horizontal:
-      matrix[point[0]][point[1]] = cor
-
-
-  
-
-  def novaCoord(oldX, oldY, W, H):
-    newX = (oldX - (-1)) * W / 2
-    newY = (oldY - (-1)) * H / 2
-    return [newX, newY]
-
-  def produzFragmento(x, y, matrix, cor):
-    Xm = round(x)
-    Ym = round(y)
-
-    try:
-      matrix[Ym][Xm] = cor
-    except IndexError:
-      print(
-        "Aviso: A posição ({}, {}) está fora dos limites da matriz.".format(
-          Xm, Ym))
-
-  def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
-    X1, Y1 = novaCoord(X1, Y1, H, W)
-    X2, Y2 = novaCoord(X2, Y2, H, W)
-    dx = X2 - X1
-    dy = Y2 - Y1
-    if (X1 == X2):
-      m = 0
-    else:
-      m = dy / dx
-    x = X1
-    y = Y1
-    b = y - m * x
-    produzFragmento(x, y, matrix, cor)
-
-    def funcPlotX(x, matrix):
-      y = m * x + b
-      produzFragmento(x, y, matrix, cor)
-
-    def funcPlotY(y, matrix):
-      produzFragmento(x, y, matrix, cor)
-
-    incremento = 0.1
-    if (x < X2):
-      while (x < X2):
-        x = x + incremento
-        funcPlotX(x, matrix)
-    elif (x == X2):
-      if (y < Y2):
-        while (y < Y2):
-          y = y + incremento
-          funcPlotY(y, matrix)
-      else:
-        while (y > Y2):
-          y = y - incremento
-          funcPlotY(y, matrix)
-    else:
-      while (x > X2):
-        x = x - incremento
-        funcPlotX(x, matrix)
-
-  def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
-    for ponto in range(0, len(arrayArestas)):
-      primeiroPonto = arrayArestas[ponto][0]
-      segundoPonto = arrayArestas[ponto][1]
-      origemX = arrayPontos[primeiroPonto][0]
-      origemY = arrayPontos[primeiroPonto][1]
-      destinoX = arrayPontos[segundoPonto][0]
-      destinoY = arrayPontos[segundoPonto][1]
-      algoritmoRasterizacao(origemX, origemY, destinoX, destinoY, H, W, matrix,
-                            cor)
 
   def produzLinhasContinuas(arrayPontos, cores):
     for index in range(len(arrayPontos)):
@@ -359,7 +282,7 @@ def Polygons():
   def preenchePoligonos(arrayPontos):
     resolucoes = [[100, 100], [300, 300], [600, 600], [800, 600], [1920, 1080]]
     cores = []
-    for quantidadePol in range(len(arrayPontos)):
+    while len(cores) < len(arrayPontos):
       cores.append([
         random.randint(0, 255),
         random.randint(0, 255),
@@ -381,7 +304,7 @@ def Polygons():
                       resolucoes[resolucao][0], resolucoes[resolucao][1],
                       matrix, cores[index])
 
-        find_internal_points(matrix, cores[index])
+        preencheRegiaoInterna(matrix, cores[index])
       plt.subplot(2, 3, resolucao + 1)
       plt.imshow(matrix.astype("uint8"))
       plt.gca().invert_yaxis()
@@ -492,9 +415,6 @@ def Polygons():
   left_sub_title1.pack(pady=1)
   left_sub_title2.pack(pady=1)
   left_sub_title3.pack(pady=0)
-
-
-
 
 label = Label(master,
 			text ="Selecione o tipo de rasterização")
