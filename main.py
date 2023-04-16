@@ -6,11 +6,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
+# Equipe : João Carlos Nepomuceno e Mateus Machado Costa
 
 master = Tk()
+style = ttk.Style(master)
+style.theme_use("winnative")
 master.title("Rasterização de Retas e Polígonos")
 master.geometry("400x150")
-master.iconbitmap(r'Icone.ico')
+master.iconbitmap('C:/Users/mateu/Downloads/Mateus/RasterizaRestasEPoligonos/Icone.ico')
 master.configure(background='lightblue')
 master.resizable(False, False)
 
@@ -193,7 +196,7 @@ def Retas():
   retaWindow = Toplevel()
   retaWindow.title("Rasterização de Retas")
   retaWindow.geometry("500x400+750+300")
-  retaWindow.iconbitmap(r'Icone.ico')
+  retaWindow.iconbitmap('C:/Users/mateu/Downloads/Mateus/RasterizaRestasEPoligonos/Icone.ico')
   retaWindow.resizable(False, False)
   retaWindow.transient(master)
   retaWindow.focus_force()
@@ -377,7 +380,7 @@ def Polygons():
   PWindow = Toplevel()
   PWindow.title("Rasterização de Polígonos")
   PWindow.geometry("500x400+750+300")
-  PWindow.iconbitmap(r'Icone.ico')
+  PWindow.iconbitmap('C:/Users/mateu/Downloads/Mateus/RasterizaRestasEPoligonos/Icone.ico')
   PWindow.resizable(False, False)
   PWindow.transient(master)
   PWindow.focus_force()
