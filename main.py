@@ -1,6 +1,8 @@
 from tkinter import * 
 from tkinter import ttk
 from tkinter import messagebox
+import customtkinter as ctk 
+from PIL import Image,ImageTk
 import re
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,13 +10,12 @@ import random
 
 # Equipe : João Carlos Nepomuceno e Mateus Machado Costa
 
-master = Tk()
-style = ttk.Style(master)
-style.theme_use("winnative")
+master = ctk.CTk()
 master.title("Rasterização de Retas e Polígonos")
-master.geometry("400x150")
-master.configure(background='lightblue')
-master.resizable(False, False)
+master.geometry("400x400")
+master._set_appearance_mode("dark")
+master.resizable(width=False, height=False)
+primaryColor = "#08b2dc"
 
 def preencheRegiaoInterna(matrix, cor):
     horizontal = []
@@ -192,7 +193,7 @@ def Retas():
     
 
   #config gerais
-  retaWindow = Toplevel()
+  retaWindow = ctk.CTkToplevel()
   retaWindow.title("Rasterização de Retas")
   retaWindow.geometry("500x400+750+300")
   retaWindow.resizable(False, False)
@@ -201,16 +202,16 @@ def Retas():
   retaWindow.grab_set() 
 
   #Layout
-  panel1 = PanedWindow(retaWindow, bd=4, relief='raised', bg='LightSkyBlue4', orient='horizontal')
+  panel1 = PanedWindow(retaWindow, bd=4, relief='raised', bg=primaryColor, orient='horizontal')
   panel1.pack(fill='both', expand=1)
 
-  left_label = Label(panel1,  bg='LightSkyBlue3')
+  left_label = Label(panel1,  bg=primaryColor)
   panel1.add(left_label)
 
-  panel2 = PanedWindow(panel1, orient='vertical', bd=4, relief='raised',bg='LightSkyBlue3')
+  panel2 = PanedWindow(panel1, orient='vertical', bd=4, relief='raised',bg=primaryColor)
   panel1.add(panel2)
 
-  right_label = Label(panel2, text="INPUTS", bg='LightSkyBlue3')
+  right_label = Label(panel2, text="INPUTS", bg=primaryColor)
   panel2.add(right_label)
   #COnfigurando ScrollBar 
       ##Adicionando um Frame dentro da right_label
@@ -222,7 +223,7 @@ def Retas():
   scrollbar.pack(side=RIGHT, fill=Y)
 
       ##Configurando a scrollbar para controlar o conteúdo do Frame
-  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set)
+  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set,highlightthickness=0)
   canvas.pack(side=LEFT, fill=BOTH, expand=1)
   scrollbar.config(command=canvas.yview)
 
@@ -232,14 +233,14 @@ def Retas():
 
       ##Adicionando os widgets desejados ao content_frame
   label = Label(content_frame, text="Reta 1 (x1,y1,x2,y2)",font=('Helvetica 40',10))
-  label.pack(pady=10,padx=50)
+  label.pack(pady=10,padx=20)
   retas = Entry(content_frame)
   retas.pack(pady=10)
   lbllst = [(label,retas)]
 
   def addReta():
       label = Label(content_frame, text="Reta " + str(len(lbllst)+1) + " (x1,y1,x2,y2)",font=('Helvetica 40',10))
-      label.pack(pady=10,padx=50)
+      label.pack(pady=10,padx=20)
       #account.place(relx=0.01, rely=0.125*(len(lbllst)+1))
       retas = Entry(content_frame)
       retas.pack(pady=10)
@@ -254,29 +255,31 @@ def Retas():
   #Definindo a porcetangem de ocupação da tela
   panel1.paneconfig(left_label, width=0.35*retaWindow.winfo_width())
   panel1.paneconfig(panel2, width=0.65*panel1.winfo_width())
-
+  img = ctk.CTkImage(light_image=Image.open("./config.png"),dark_image=Image.open("./config.png"),size=(20,20))
   #left_label
       ##inserir título
-  left_sub_title1 = Label(left_label, text="Rasterização de Retas", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title2 = Label(left_label, text=" Configurações", font=('Arial', 10), bg='LightSkyBlue3')
+  left_sub_title1 = Label(left_label, text="Rasterização de Retas", font=('Arial bold', 10), bg=primaryColor)
+  image = ctk.CTkLabel(left_label,image=img,text=None)
+  left_sub_title2 = Label(left_label, text="Configurações", font=('Arial', 10), bg=primaryColor,fg="white")
 
-  left_sub_title1.pack(pady=0)
+  left_sub_title1.pack(pady=10)
+  image.pack()
   left_sub_title2.pack(pady=5)
 
       ##adcionar botões 
-  button1 = Button(left_label, text= 'Adicionar Reta(s)',command=addReta)
-  button1.pack(padx=5, pady=40)
+  button1 = ctk.CTkButton(left_label, text= 'Adicionar Reta(s)',command=addReta,fg_color="white",text_color="black",font=("arial bold", 12),hover_color="#afafaf",corner_radius=100)
+  button1.pack(padx=5, pady=20)
 
-  button2 = Button(left_label, text= 'Remover Reta(s)',command = removeReta)
+  button2 = ctk.CTkButton(left_label, text= 'Remover Reta(s)',command = removeReta,fg_color="white",text_color="black",font=("arial bold", 12),hover_color="#afafaf",corner_radius=100)
   button2.pack(padx=5, pady=0)
 
-  button3 = Button(left_label, text= 'Iniciar',command= pegarRetas)
-  button3.pack(padx=5, pady=50)
+  button3 = ctk.CTkButton(left_label, text= 'Iniciar',command= pegarRetas,text_color="white",fg_color="#1f6aa5",border_width=3,border_color="white",hover_color="#164f7c",font=("arial bold",12),corner_radius=100)
+  button3.pack(padx=5, pady=40)
 
       #sub título
-  left_sub_title1 = Label(left_label, text="Não configure restas que estejam", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title2 = Label(left_label, text="fora dos limites da matriz! [-1,1]", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title3 = Label(left_label, text="Preencha todos os inputs!", font=('Arial', 10), bg='LightSkyBlue3')
+  left_sub_title1 = Label(left_label, text="Não configure restas que estejam", font=('Arial', 8), bg=primaryColor)
+  left_sub_title2 = Label(left_label, text="fora dos limites da matriz! [-1,1]", font=('Arial', 8), bg=primaryColor)
+  left_sub_title3 = Label(left_label, text="Preencha todos os inputs!", font=('Arial', 8), bg=primaryColor)
   left_sub_title1.pack(pady=1)
   left_sub_title2.pack(pady=1)
   left_sub_title3.pack(pady=0)
@@ -375,7 +378,7 @@ def Polygons():
           
       
    
-  PWindow = Toplevel()
+  PWindow = ctk.CTkToplevel()
   PWindow.title("Rasterização de Polígonos")
   PWindow.geometry("500x400+750+300")
   PWindow.resizable(False, False)
@@ -384,16 +387,16 @@ def Polygons():
   PWindow.grab_set() 
 
   #Layout
-  panel1 = PanedWindow(PWindow, bd=4, relief='raised', bg='LightSkyBlue4', orient='horizontal')
+  panel1 = PanedWindow(PWindow, bd=4, relief='raised', bg=primaryColor, orient='horizontal')
   panel1.pack(fill='both', expand=1)
 
-  left_label = Label(panel1,  bg='LightSkyBlue3')
+  left_label = Label(panel1,  bg=primaryColor)
   panel1.add(left_label)
 
-  panel2 = PanedWindow(panel1, orient='vertical', bd=4, relief='raised',bg='LightSkyBlue3')
+  panel2 = PanedWindow(panel1, orient='vertical', bd=4, relief='raised',bg=primaryColor)
   panel1.add(panel2)
 
-  right_label = Label(panel2, text="INPUTS", bg='LightSkyBlue3')
+  right_label = Label(panel2, text="INPUTS", bg=primaryColor)
   panel2.add(right_label)
   #COnfigurando ScrollBar 
       ##Adicionando um Frame dentro da right_label
@@ -405,7 +408,7 @@ def Polygons():
   scrollbar.pack(side=RIGHT, fill=Y)
 
       ##Configurando a scrollbar para controlar o conteúdo do Frame
-  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set)
+  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set,highlightthickness=0)
   canvas.pack(side=LEFT, fill=BOTH, expand=1)
   scrollbar.config(command=canvas.yview)
 
@@ -415,14 +418,14 @@ def Polygons():
 
       ##Adicionando os widgets desejados ao content_frame
   label = Label(content_frame, text="Polígono 1 [(x1,y1),(x2,y2),...]",font=('Helvetica 40',10))
-  label.pack(pady=10,padx=50)
+  label.pack(pady=10,padx=20)
   polygon = Entry(content_frame)
   polygon.pack(pady=10)
   listP = [(label,polygon)]
 
   def addPolygon():
       label = Label(content_frame, text="Polígono " + str(len(listP)+1) + " [(x1,y1),(x2,y2),...]",font=('Helvetica 40',10))
-      label.pack(pady=10,padx=50)
+      label.pack(pady=10,padx=20)
       
       polygon = Entry(content_frame)
       polygon.pack(pady=10)
@@ -437,49 +440,56 @@ def Polygons():
   #Definindo a porcetangem de ocupação da tela
   panel1.paneconfig(left_label, width=0.35*PWindow.winfo_width())
   panel1.paneconfig(panel2, width=0.65*panel1.winfo_width())
+  img = ctk.CTkImage(light_image=Image.open("./config.png"),dark_image=Image.open("./config.png"),size=(20,20))
 
   #left_label
       ##inserir título
-  left_sub_title1 = Label(left_label, text="Rasterização de Polígonos", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title2 = Label(left_label, text=" Configurações", font=('Arial', 10), bg='LightSkyBlue3')
+  left_sub_title1 = Label(left_label, text="Rasterização de Polígonos", font=('Arial bold', 10), bg=primaryColor)
+  image = ctk.CTkLabel(left_label,image=img,text=None)
+  left_sub_title2 = Label(left_label, text=" Configurações", font=('Arial bold', 10), bg=primaryColor,fg="white")
 
-  left_sub_title1.pack(pady=0)
+  left_sub_title1.pack(pady=10)
+  image.pack()
   left_sub_title2.pack(pady=5)
 
       ##adcionar botões 
-  button1 = Button(left_label, text= 'Adicionar Polígono(s)',command=addPolygon)
-  button1.pack(padx=5, pady=40)
+  button1 = ctk.CTkButton(left_label, text= 'Adicionar Polígono(s)',command=addPolygon,fg_color="white",text_color="black",font=("arial bold", 12),hover_color="#afafaf",corner_radius=100)
+  button1.pack(padx=5, pady=20)
 
-  button2 = Button(left_label, text= 'Remover Polígono(s)',command = removePolygon)
+  button2 = ctk.CTkButton(left_label, text= 'Remover Polígono(s)',command = removePolygon,fg_color="white",text_color="black",font=("arial bold", 12),hover_color="#afafaf",corner_radius=100)
   button2.pack(padx=5, pady=0)
 
-  button3 = Button(left_label, text= 'Iniciar', command= pegarPolygons)
-  button3.pack(padx=5, pady=50)
+  button3 = ctk.CTkButton(left_label, text= 'Iniciar', command= pegarPolygons,text_color="white",fg_color="#1f6aa5",border_width=3,border_color="white",hover_color="#164f7c",font=("arial bold",12),corner_radius=100)
+  button3.pack(padx=5, pady=40)
 
       #sub título
-  left_sub_title1 = Label(left_label, text="Não configure polígonos que estejam", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title2 = Label(left_label, text="fora dos limites da matriz! [-1,1]", font=('Arial', 10), bg='LightSkyBlue3')
-  left_sub_title3 = Label(left_label, text="Preencha todos os inputs!", font=('Arial', 10), bg='LightSkyBlue3')
+  left_sub_title1 = Label(left_label, text="Não configure polígonos que estejam", font=('Arial', 7), bg=primaryColor)
+  left_sub_title2 = Label(left_label, text="fora dos limites da matriz! [-1,1]", font=('Arial', 7), bg=primaryColor)
+  left_sub_title3 = Label(left_label, text="Preencha todos os inputs!", font=('Arial', 7), bg=primaryColor)
   left_sub_title1.pack(pady=1)
   left_sub_title2.pack(pady=1)
   left_sub_title3.pack(pady=0)
 
-label = Label(master,
-			text ="Selecione o tipo de rasterização")
+icone = ctk.CTkImage(light_image=Image.open("./Icone2.png"),dark_image=Image.open("./Icone2.png"),size=(150,150))
+
+ctk.CTkLabel(master,text=None,image=icone).pack(pady = 10)
+
+label = ctk.CTkLabel(master,
+			text ="Selecione o tipo de rasterização que deseja executar")
 
 label.pack(pady = 10)
 
 # a button widget which will open a
 # new window on button click
-btn = Button(master,
+btn = ctk.CTkButton(master,
 			text ="Retas",
-			command = Retas)
+			command = Retas,fg_color=primaryColor,width=200,height=50,text_color="black",border_width=3,border_color="white",hover_color="#046b84",font=("arial bold",16),corner_radius=100)
 btn.pack(pady = 10)
 
-btn2 = Button(master,
+btn2 = ctk.CTkButton(master,
             text="Polígonos",
-            command =  Polygons)
+            command =  Polygons,fg_color=primaryColor,width=200,height=50,text_color="black",border_width=3,border_color="white",hover_color="#046b84",font=("arial bold",16),corner_radius=100)
 btn2.pack(pady=10)
 
 # mainloop, runs infinitely
-mainloop()
+master.mainloop()
