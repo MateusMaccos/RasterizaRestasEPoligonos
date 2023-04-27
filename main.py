@@ -258,7 +258,7 @@ def Retas():
   img = ctk.CTkImage(light_image=Image.open("./config.png"),dark_image=Image.open("./config.png"),size=(20,20))
   #left_label
       ##inserir título
-  left_sub_title1 = Label(left_label, text="Rasterização de Retas", font=('Arial bold', 10), bg=primaryColor)
+  left_sub_title1 = Label(left_label, text="Rasterização de Retas", font=('arial bold', 10), bg=primaryColor)
   image = ctk.CTkLabel(left_label,image=img,text=None)
   left_sub_title2 = Label(left_label, text="Configurações", font=('Arial', 10), bg=primaryColor,fg="white")
 
@@ -416,16 +416,16 @@ def Polygons():
 
       ##Adicionando os widgets desejados ao content_frame
   label = Label(content_frame, text="Polígono 1 [(x1,y1),(x2,y2),...]",font=('Helvetica 40',10))
-  label.pack(pady=10,padx=42)
-  polygon = Entry(content_frame)
+  label.pack(pady=10,padx=47)
+  polygon = Entry(content_frame,width=30)
   polygon.pack(pady=10)
   listP = [(label,polygon)]
 
   def addPolygon():
       label = Label(content_frame, text="Polígono " + str(len(listP)+1) + " [(x1,y1),(x2,y2),...]",font=('Helvetica 40',10))
-      label.pack(pady=10,padx=20)
+      label.pack(pady=10,padx=47)
       
-      polygon = Entry(content_frame)
+      polygon = Entry(content_frame,width=30)
       polygon.pack(pady=10)
       listP.append((label,polygon))
 
