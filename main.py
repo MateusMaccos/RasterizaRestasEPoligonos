@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 import customtkinter as ctk 
-from PIL import Image,ImageTk
+from PIL import Image
 import re
 import matplotlib.pyplot as plt
 import numpy as np
@@ -219,11 +219,11 @@ def Retas():
   scrollable_frame.pack(fill='both', expand=1)
 
       ##Adicionando a scrollbar ao Frame
-  scrollbar = ttk.Scrollbar(scrollable_frame, orient=VERTICAL)
+  scrollbar = ttk.Scrollbar(scrollable_frame, orient=VERTICAL,)
   scrollbar.pack(side=RIGHT, fill=Y)
 
       ##Configurando a scrollbar para controlar o conteúdo do Frame
-  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set,highlightthickness=0)
+  canvas = Canvas(scrollable_frame,scrollregion=(0,0,0,8000),highlightthickness=0)
   canvas.pack(side=LEFT, fill=BOTH, expand=1)
   scrollbar.config(command=canvas.yview)
 
@@ -233,7 +233,7 @@ def Retas():
 
       ##Adicionando os widgets desejados ao content_frame
   label = Label(content_frame, text="Reta 1 (x1,y1,x2,y2)",font=('Helvetica 40',10))
-  label.pack(pady=10,padx=20)
+  label.pack(pady=10,padx=80)
   retas = Entry(content_frame)
   retas.pack(pady=10)
   lbllst = [(label,retas)]
@@ -400,17 +400,15 @@ def Polygons():
   panel2.add(right_label)
   #COnfigurando ScrollBar 
       ##Adicionando um Frame dentro da right_label
-  scrollable_frame = Frame(right_label)
-  scrollable_frame.pack(fill='both', expand=1)
-
+  
       ##Adicionando a scrollbar ao Frame
-  scrollbar = ttk.Scrollbar(scrollable_frame, orient=VERTICAL)
-  scrollbar.pack(side=RIGHT, fill=Y)
+  scrollbar = ttk.Scrollbar(right_label, orient='vertical',)
+  scrollbar.pack(side=RIGHT, fill='y')
 
       ##Configurando a scrollbar para controlar o conteúdo do Frame
-  canvas = Canvas(scrollable_frame, yscrollcommand=scrollbar.set,highlightthickness=0)
-  canvas.pack(side=LEFT, fill=BOTH, expand=1)
-  scrollbar.config(command=canvas.yview)
+  canvas = Canvas(right_label, scrollregion=(0,0,0,8000), highlightthickness=0)
+  canvas.pack(side=LEFT, fill=BOTH, expand=1,)
+  scrollbar.config(command=canvas.yview,)
 
       ##Adicionando o conteúdo desejado ao canvas
   content_frame = Frame(canvas)
@@ -418,7 +416,7 @@ def Polygons():
 
       ##Adicionando os widgets desejados ao content_frame
   label = Label(content_frame, text="Polígono 1 [(x1,y1),(x2,y2),...]",font=('Helvetica 40',10))
-  label.pack(pady=10,padx=20)
+  label.pack(pady=10,padx=42)
   polygon = Entry(content_frame)
   polygon.pack(pady=10)
   listP = [(label,polygon)]
