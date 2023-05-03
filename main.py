@@ -60,9 +60,7 @@ def produzFragmento(x, y, matrix, cor):
   try:
     matrix[Ym][Xm] = cor
   except IndexError:
-    print(
-      "Aviso: A posição ({}, {}) está fora dos limites da matriz.".format(
-        Xm, Ym))
+    return 0
 
 def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
   X1, Y1 = novaCoord(X1, Y1, H, W)
@@ -133,8 +131,6 @@ def Retas():
           continuo = plt.subplot(2, 3, 6)
           continuo.set_xlim([-1, 1])
           continuo.set_ylim([-1, 1])
-          print(origemX,origemY)
-          print(destinoX,destinoY)
           continuo.plot([origemX, destinoX], [origemY, destinoY],
                   color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
           
