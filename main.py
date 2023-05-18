@@ -57,6 +57,12 @@ def produzFragmento(x, y, matrix, cor):
   Xm = round(x)
   Ym = round(y)
 
+  if Xm == len(matrix[0]):
+    Xm = (len(matrix[0])-1)
+
+  if Ym == len(matrix):
+    Ym = (len(matrix)-1)
+    
   try:
     matrix[Ym][Xm] = cor
   except IndexError:
