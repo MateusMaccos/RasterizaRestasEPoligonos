@@ -17,13 +17,15 @@ master._set_appearance_mode("dark")
 master.resizable(width=False, height=False)
 primaryColor = "#08b2dc"
 
+# Preenche o polígono
 def preencheRegiaoInterna(matrix, cor):
     horizontal = []
-    # ler a matriz horizontalmente e guardar as posições internas
+    # Ler a matriz horizontalmente e guardar as posições internas
     for i in range(matrix.shape[0]):
       inside_polygon = False
       horizontalLinha = []
       counter = 0
+      # Percorre a matriz linha por linha procurando pontos igual a cor do polígono
       for j in range(matrix.shape[1]):
         if all(matrix[i][j] == cor):
           if j != matrix.shape[1] - 1:
@@ -41,18 +43,19 @@ def preencheRegiaoInterna(matrix, cor):
         for elemento in horizontalLinha:
           horizontal.append(elemento)
 
-    # pintar os pontos internos na matriz
+    # Pintar os pontos internos na matriz
     for point in horizontal:
       matrix[point[0]][point[1]] = cor
 
 
   
-
+# Normaliza para a resolução
 def novaCoord(oldX, oldY, W, H):
   newX = (oldX - (-1)) * W / 2
   newY = (oldY - (-1)) * H / 2
   return [newX, newY]
 
+# Registra o ponto normalizado na matrix
 def produzFragmento(x, y, matrix, cor):
   Xm = round(x)
   Ym = round(y)
@@ -68,6 +71,7 @@ def produzFragmento(x, y, matrix, cor):
   except IndexError:
     return 0
 
+# Normaliza os pontos, trata as excessões e chama o produzFragmento
 def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
   X1, Y1 = novaCoord(X1, Y1, H, W)
   X2, Y2 = novaCoord(X2, Y2, H, W)
@@ -82,13 +86,16 @@ def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
   b = y - m * x
   produzFragmento(x, y, matrix, cor)
 
+  # Calcula Y para um X dado e plota na matriz
   def funcPlotX(x, matrix):
     y = m * x + b
     produzFragmento(x, y, matrix, cor)
 
+  # Plota na matriz passando Y quando os pontos tem X constante
   def funcPlotY(y, matrix):
     produzFragmento(x, y, matrix, cor)
 
+  # Percorrendo do X1,Y1 até X2,Y2
   incremento = 0.1
   if (x < X2):
     while (x < X2):
@@ -108,6 +115,9 @@ def algoritmoRasterizacao(X1, Y1, X2, Y2, H, W, matrix, cor):
       x = x - incremento
       funcPlotX(x, matrix)
 
+# Retas: Liga os dois pontos informados
+# Polígono: Traça as arestas 
+# arestas=[[0,1],[1,2],[2,0]]
 def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
   for ponto in range(0, len(arrayArestas)):
     primeiroPonto = arrayArestas[ponto][0]
@@ -123,6 +133,7 @@ def produzArestas(arrayPontos, arrayArestas, H, W, matrix, cor):
 def Retas():
   #Função de Rasterização da RETA
   def Rasterizacao(reta):
+    # Mostra as retas no contínuo (-1 até 1)
     def produzRetasContinuas(arrayPontos,cores):
       for index in range(len(arrayPontos)):
         cor = cores[index]
@@ -139,7 +150,9 @@ def Retas():
           continuo.set_ylim([-1, 1])
           continuo.plot([origemX, destinoX], [origemY, destinoY],
                   color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
-          
+
+    # Gera matriz pela resolução  
+    # arrayPontos =[[[1,1],[0,0]],[],...]  
     def desenhaReta(arrayPontos):
       resolucoes = [[100, 100],[300, 300],[600, 600], [800, 600],[1920, 1080]]
       cores = []
@@ -163,6 +176,7 @@ def Retas():
       plt.show()
     desenhaReta(reta)
 
+  # Pega os valores inseridos
   def pegarRetas():
       coords=[]
       temErro = False
@@ -310,6 +324,7 @@ def Polygons():
         continuo.plot([origemX, destinoX], [origemY, destinoY],
                 color=(cor[0] / 255, cor[1] / 255, cor[2] / 255))
 
+  # 
   def preenchePoligonos(arrayPontos):
     resolucoes = [[100, 100], [300, 300], [600, 600], [800, 600], [1920, 1080]]
     cores = []
@@ -324,7 +339,9 @@ def Polygons():
         (resolucoes[resolucao][1], resolucoes[resolucao][0], 3),
         dtype=np.uint8)
       for index in range(len(arrayPontos)):
-        arrayArestas = []
+        arrayArestas = [] 
+        # Liga os pontos da lista para gerar a matriz de arestas
+        # pontos = [[0,1],[2,3],[4,1]]
         for j in range(len(arrayPontos[index])):
           if j != (len(arrayPontos[index]) - 1):
             arrayArestas.append((j, j + 1))
@@ -334,7 +351,6 @@ def Polygons():
         produzArestas(arrayPontos[index], arrayArestas,
                       resolucoes[resolucao][0], resolucoes[resolucao][1],
                       matrix, cores[index])
-
         preencheRegiaoInterna(matrix, cores[index])
       plt.subplot(2, 3, resolucao + 1)
       plt.imshow(matrix.astype("uint8"))
@@ -342,7 +358,7 @@ def Polygons():
     produzLinhasContinuas(arrayPontos, cores)
     plt.show()
 
-
+  # Pega as coordenadas inseridas
   def pegarPolygons():
     count = 0
     allPolygons = []
@@ -351,6 +367,7 @@ def Polygons():
         coordPolygon = []
         count+=1
         inputList = re.findall(r'-?\d+\.?\d*', polygon[1].get())
+        # Faz tratamento de erros
         if len(inputList) % 2 != 0:
           temErro = True
           messagebox.showerror(title='Erro',message=f"Você esqueceu alguma coordenada no polígono {count}, não foi possível separar em pares as suas coordenadas!")
@@ -400,7 +417,7 @@ def Polygons():
 
   right_label = Label(panel2, text="INPUTS", bg=primaryColor)
   panel2.add(right_label)
-  #COnfigurando ScrollBar 
+  #Configurando ScrollBar 
       ##Adicionando um Frame dentro da right_label
   
       ##Adicionando a scrollbar ao Frame
@@ -443,7 +460,7 @@ def Polygons():
   img = ctk.CTkImage(light_image=Image.open("./config.png"),dark_image=Image.open("./config.png"),size=(20,20))
 
   #left_label
-      ##inserir título
+
   left_sub_title1 = Label(left_label, text="Rasterização de Polígonos", font=('Arial bold', 10), bg=primaryColor)
   image = ctk.CTkLabel(left_label,image=img,text=None)
   left_sub_title2 = Label(left_label, text=" Configurações", font=('Arial bold', 10), bg=primaryColor,fg="white")
@@ -452,7 +469,7 @@ def Polygons():
   image.pack()
   left_sub_title2.pack(pady=5)
 
-      ##adcionar botões 
+
   button1 = ctk.CTkButton(left_label, text= 'Adicionar Polígono(s)',command=addPolygon,fg_color="white",text_color="black",font=("arial bold", 12),hover_color="#afafaf",corner_radius=100)
   button1.pack(padx=5, pady=20)
 
@@ -462,7 +479,7 @@ def Polygons():
   button3 = ctk.CTkButton(left_label, text= 'Iniciar', command= pegarPolygons,text_color="white",fg_color="#1f6aa5",border_width=3,border_color="white",hover_color="#164f7c",font=("arial bold",12),corner_radius=100)
   button3.pack(padx=5, pady=40)
 
-      #sub título
+
   left_sub_title1 = Label(left_label, text="Não configure polígonos que estejam", font=('Arial', 7), bg=primaryColor)
   left_sub_title2 = Label(left_label, text="fora dos limites da matriz! [-1,1]", font=('Arial', 7), bg=primaryColor)
   left_sub_title3 = Label(left_label, text="Preencha todos os inputs!", font=('Arial', 7), bg=primaryColor)
@@ -479,17 +496,17 @@ label = ctk.CTkLabel(master,
 
 label.pack(pady = 10)
 
-# a button widget which will open a
-# new window on button click
+# Entra na tela de rasterizar retas
 btn = ctk.CTkButton(master,
 			text ="Retas",
 			command = Retas,fg_color=primaryColor,width=200,height=50,text_color="black",border_width=3,border_color="white",hover_color="#046b84",font=("arial bold",16),corner_radius=100)
 btn.pack(pady = 10)
 
+# Entra na tela de rasterizar polígonos
 btn2 = ctk.CTkButton(master,
             text="Polígonos",
             command =  Polygons,fg_color=primaryColor,width=200,height=50,text_color="black",border_width=3,border_color="white",hover_color="#046b84",font=("arial bold",16),corner_radius=100)
 btn2.pack(pady=10)
 
-# mainloop, runs infinitely
+# Roda infinitamente
 master.mainloop()
