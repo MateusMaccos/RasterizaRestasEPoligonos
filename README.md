@@ -1,6 +1,6 @@
 # Rasterização de retas e polígonos
 
-![RasterizacaoRetasPoligonos](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/548b568c-f271-467b-b38b-dff5adbb0285)
+![RasterizacaoRetasPoligonos](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/02d203e5-5189-4d48-ae38-5a2ab1cbb581)
 
 ## Implementação
 Na implementação/desenvolvimento do trabalho para rasterização de retas:
@@ -31,17 +31,17 @@ modelo no contínuo e a imagem resultante na resolução escolhida.
 
 ## Imagem ilustrativa da interface da rasterização de retas:
 
-![RasterizacaoRetas](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/ce0c6bd7-5c83-4354-ad01-d7107aa51dd4)
+![RasterizacaoRetas](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/7c2b8b97-fd58-4e66-94b0-43e2f1536093)
 
 ## Imagem ilustrativa da saída da interface da rasterização de retas:
 
-![RetaRasterizada](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/298ac1bc-46ef-4a0a-847a-bd4ca9b65d43)
+![RetaRasterizada](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/2056d49e-6e2a-4056-801d-3c072a8503e8)
 
 ## Imagem ilustrativa da interface da rasterização de polígonos:
 
-![RasterizacaoPoligonos](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/39af28b9-22ac-46f0-bc1a-74cd34f547e9)
+![RasterizacaoPoligonos](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/19838807-1e71-4eec-8071-124ee15bdf33)
 
 ## Imagem ilustrativa da saída da interface da rasterização de polígonos:
 
-![PoligonosRasterizada](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/52b1dfef-ad83-4a2d-b4c1-f338835210c3)
+![PoligonosRasterizada](https://github.com/MateusMaccos/RasterizaRestasEPoligonos/assets/75508372/58f6c3e7-6c9a-466a-8cb2-4b7d51bc1a87)
 
